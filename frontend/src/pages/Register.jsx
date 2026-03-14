@@ -1,30 +1,47 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import "../styles/auth.css";
 
-function Login() {
+function Register() {
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
   const handleSubmit = async (e) => {
-    e.preventDefault();
+    e.preventDefault(); // Prevent form from refreshing the page
+
     try {
-      const res = await fetch("http://localhost:5000/api/auth/login", {
+      const res = await fetch("http://localhost:5000/api/auth/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ name, email, password }),
       });
+
       const data = await res.json();
-      if (!res.ok) throw new Error(data.message || "Login failed");
-      localStorage.setItem("token", data.token);
-      alert("Login successful");
+      if (!res.ok) throw new Error(data.message || "Registration failed");
+        alert("Registration successful!");
+      window.location.href = "/login";
+
     } catch (err) {
-      alert(err.message || "Login failed");
+      alert(err.message || "Registration failed");
     }
   };
+
   return (
     <div className="auth-container">
       <div className="auth-box">
-        <h2>Sign in</h2>
+        <h2>Create account</h2>
+
         <form onSubmit={handleSubmit} className="auth-form">
+          <input
+            type="text"
+            placeholder="Full name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            className="auth-input"
+            required
+          />
+
           <input
             type="email"
             placeholder="Email"
@@ -33,6 +50,7 @@ function Login() {
             className="auth-input"
             required
           />
+
           <input
             type="password"
             placeholder="Password"
@@ -41,16 +59,19 @@ function Login() {
             className="auth-input"
             required
           />
+
           <button type="submit" className="auth-button">
-            Sign in
+            Create account
           </button>
         </form>
+
         <p className="auth-link">
-          Don't have an account?
-          <Link to="/register">Register</Link>
+          Already have an account?
+          <Link to="/login">Sign in</Link>
         </p>
       </div>
     </div>
   );
 }
-export default Login;
+
+export default Register;

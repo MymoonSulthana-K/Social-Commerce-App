@@ -48,13 +48,18 @@ exports.loginUser = async (req,res) => {
         if(!isMatch){
             return res.status(400).json({message:"Invalid credentials"});
         }
-
+//why do we need to generate a token here? 
+// because we need to authenticate the user and 
+// authorize the user to access the protected routes. 
+// we can use the token to verify the user's identity and grant access to the protected routes.
         const token = jwt.sign(
             {id:user._id},
             process.env.JWT_SECRET,
             {expiresIn:"7d"}
         );
-
+//why do we send the response sent to the frontend?
+// we send the response to the frontend so that the frontend can store the token in the local 
+// storage and use it to authenticate the user and authorize the user to access the protected routes.
         res.json({
             token,
             user:{
