@@ -1,115 +1,90 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+:root{
 
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
-All colors MUST be HSL.
-*/
+/* Background */
+--background: #f9f4ef;
 
-@layer base {
-  :root {
-    --background: 0 0% 100%;
-    --foreground: 0 0% 7%;
+/* Text */
+--headline: #020826;
+--paragraph: #716040;
 
-    --card: 0 0% 100%;
-    --card-foreground: 0 0% 7%;
+/* Buttons */
+--button: #8c7851;
+--button-text: #fffffe;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 7%;
+/* Illustration Colors */
+--stroke: #020826;
+--main: #fffffe;
+--highlight: #8c7851;
+--secondary: #eaddcf;
+--tertiary: #f25042;
 
-    --primary: 0 0% 7%;
-    --primary-foreground: 0 0% 100%;
-
-    --secondary: 0 0% 96%;
-    --secondary-foreground: 0 0% 7%;
-
-    --muted: 0 0% 96%;
-    --muted-foreground: 0 0% 45%;
-
-    --accent: 0 0% 96%;
-    --accent-foreground: 0 0% 7%;
-
-    --destructive: 0 84% 60%;
-    --destructive-foreground: 0 0% 100%;
-
-    --border: 0 0% 92%;
-    --input: 0 0% 98%;
-    --ring: 0 0% 7%;
-
-    --radius: 0.5rem;
-
-    --field-bg: 0 0% 98%;
-    --shadow-layered: 0 0 0 1px rgba(0,0,0,0.08), 0 2px 4px rgba(0,0,0,0.02), 0 12px 24px -4px rgba(0,0,0,0.04);
-    --ease-auth: cubic-bezier(0.25, 0.1, 0.25, 1);
-
-    font-family: "Instrument Sans", "Inter", system-ui, sans-serif;
-    -webkit-font-smoothing: antialiased;
-
-    --sidebar-background: 0 0% 98%;
-
-    --sidebar-foreground: 240 5.3% 26.1%;
-
-    --sidebar-primary: 240 5.9% 10%;
-
-    --sidebar-primary-foreground: 0 0% 98%;
-
-    --sidebar-accent: 240 4.8% 95.9%;
-
-    --sidebar-accent-foreground: 240 5.9% 10%;
-
-    --sidebar-border: 220 13% 91%;
-
-    --sidebar-ring: 217.2 91.2% 59.8%;
-  }
-
-  .dark {
-    --background: 0 0% 5%;
-    --foreground: 0 0% 96%;
-
-    --card: 0 0% 5%;
-    --card-foreground: 0 0% 96%;
-
-    --popover: 0 0% 5%;
-    --popover-foreground: 0 0% 96%;
-
-    --primary: 0 0% 96%;
-    --primary-foreground: 0 0% 7%;
-
-    --secondary: 0 0% 15%;
-    --secondary-foreground: 0 0% 96%;
-
-    --muted: 0 0% 15%;
-    --muted-foreground: 0 0% 55%;
-
-    --accent: 0 0% 15%;
-    --accent-foreground: 0 0% 96%;
-
-    --destructive: 0 62% 31%;
-    --destructive-foreground: 0 0% 96%;
-
-    --border: 0 0% 15%;
-    --input: 0 0% 15%;
-    --ring: 0 0% 83%;
-
-    --field-bg: 0 0% 10%;
-
-    --sidebar-background: 0 0% 7%;
-    --sidebar-foreground: 0 0% 96%;
-    --sidebar-primary: 0 0% 90%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 0 0% 13%;
-    --sidebar-accent-foreground: 0 0% 96%;
-    --sidebar-border: 0 0% 13%;
-    --sidebar-ring: 0 0% 60%;
-  }
 }
 
-@layer base {
-  * {
-    @apply border-border;
-  }
+/* Reset */
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Poppins', sans-serif;
+}
 
-  body {
-    @apply bg-background text-foreground;
-  }
+body{
+background:var(--background);
+color:var(--headline);
+}
+
+h1,h2,h3{
+color:var(--headline);
+}
+
+p{
+color:var(--paragraph);
+line-height:1.6;
+}
+
+.btn{
+
+background:var(--button);
+color:var(--button-text);
+border:none;
+padding:10px 18px;
+border-radius:6px;
+cursor:pointer;
+font-weight:600;
+}
+
+.btn:hover{
+opacity:0.9;
+}
+
+.card{
+
+background:var(--main);
+padding:20px;
+border-radius:10px;
+box-shadow:0 4px 12px rgba(0,0,0,0.08);
+
+}
+
+.navbar{
+
+background:var(--main);
+border-bottom:2px solid var(--secondary);
+padding:15px 40px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+
+}
+
+.nav-links a{
+
+color:var(--headline);
+text-decoration:none;
+margin-left:20px;
+
+}
+
+.nav-links a:hover{
+color:var(--highlight);
 }
