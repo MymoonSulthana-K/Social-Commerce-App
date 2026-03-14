@@ -1,70 +1,71 @@
-.auth-container{
-height:calc(100vh - 70px);
-display:flex;
-justify-content:center;
-align-items:center;
+.auth-container {
+    height: calc(100vh - 70px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
-.auth-box{
-background:var(--main);
-padding:40px;
-width:360px;
-border-radius:12px;
-box-shadow:0 8px 20px rgba(0,0,0,0.08);
-border:1px solid var(--secondary);
+.auth-box {
+    background: var(--main);
+    padding: 40px;
+    width: 360px;
+    border-radius: 12px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+    border: 1px solid var(--secondary);
 }
 
-.auth-box h2{
-text-align:center;
-margin-bottom:25px;
-color:var(--headline);
+.auth-box h2 {
+    text-align: center;
+    margin-bottom: 25px;
+    color: var(--headline);
 }
 
-.auth-form{
-display:flex;
-flex-direction:column;
-gap:15px;
+.auth-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
 }
 
-.auth-input{
-padding:12px;
-border-radius:6px;
-border:1px solid var(--secondary);
-font-size:14px;
+.auth-input {
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid var(--secondary);
+    font-size: 14px;
+    background: #fff;
 }
 
-.auth-input:focus{
-outline:none;
-border-color:var(--highlight);
+.auth-input:focus {
+    outline: none;
+    border-color: var(--highlight);
 }
 
-.auth-button{
-background:var(--button);
-color:var(--button-text);
-padding:12px;
-border:none;
-border-radius:6px;
-font-weight:600;
-cursor:pointer;
+.auth-button {
+    background: var(--button);
+    color: var(--button-text);
+    padding: 12px;
+    border: none;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
 }
 
-.auth-button:hover{
-opacity:0.9;
+.auth-button:hover {
+    opacity: 0.9;
 }
 
-.auth-link{
-text-align:center;
-margin-top:18px;
-color:var(--paragraph);
+.auth-link {
+    text-align: center;
+    margin-top: 18px;
+    color: var(--paragraph);
 }
 
-.auth-link a{
-margin-left:6px;
-color:var(--highlight);
-font-weight:600;
-text-decoration:none;
+.auth-link a {
+    margin-left: 6px;
+    color: var(--highlight);
+    font-weight: 600;
+    text-decoration: none;
 }
 
-.auth-link a:hover{
-text-decoration:underline;
+.auth-link a:hover {
+    text-decoration: underline;
 }
