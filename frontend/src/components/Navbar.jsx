@@ -10,13 +10,14 @@ function Navbar() {
             <div className="nav-links">
                 <Link to="/">Home</Link>
                 <Link to="/products">Products</Link>
-                <Link to="/login">Login</Link>
-                <Link to="/register">Register</Link>
+                <Link to="/cart">Cart</Link>
                 
                 {token ? (
                     <Link to="/profile">Profile</Link>
                 ) : (
                     <>
+                        <Link to="/login">Login</Link>
+                        <Link to="/register">Register</Link>
                     </>
                 )}
             </div>

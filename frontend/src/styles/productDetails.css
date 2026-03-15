@@ -102,6 +102,19 @@
     background: var(--secondary);
 }
 
+.buy-now-btn {
+    background: var(--highlight);
+    color: var(--button-text);
+
+    border: none;
+    padding: 12px 20px;
+
+    border-radius: 6px;
+    cursor: pointer;
+
+    font-weight: 500;
+    transition: 0.2s ease;
+}
 
 /* LOADING TEXT */
 

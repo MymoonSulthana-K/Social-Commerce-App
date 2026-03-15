@@ -24,6 +24,26 @@ function ProductDetails(){
       ? product.image
       : `http://localhost:5000${product.image}`;
 
+  const addToCart = () => {
+    const cart = JSON.parse(localStorage.getItem("cart") || "[]");
+    const existingItem = cart.find(item => item._id === product._id);
+
+    if (existingItem) {
+      existingItem.quantity += 1;
+    } else {
+      cart.push({
+        _id: product._id,
+        name: product.name,
+        price: product.price,
+        image: product.image,
+        quantity: 1
+      });
+    }
+
+    localStorage.setItem("cart", JSON.stringify(cart));
+    alert("Product added to cart!");
+  };
+
   return(
 
     <div className="product-details-container">
@@ -56,14 +76,13 @@ function ProductDetails(){
 
         <div className="product-actions">
 
-          <button className="add-cart-btn">
+          <button className="add-cart-btn" onClick={addToCart}>
             Add to Cart
           </button>
 
           <button className="refer-btn">
             Refer
           </button>
-
         </div>
 
       </div>

@@ -13,6 +13,7 @@ app.use(express.json());
 
 app.use("/api/auth",require("./routes/authRoutes"));
 app.use("/api/products", require("./routes/productRoutes"));
+app.use("/api/cart", require("./routes/cartRoutes"));
 
 app.use("/images", express.static("public/images"));
 

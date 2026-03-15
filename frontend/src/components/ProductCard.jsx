@@ -9,6 +9,26 @@ function ProductCard({ product }) {
       ? product.image
       : `http://localhost:5000${product.image}`;
 
+  const addToCart = () => {
+    const cart = JSON.parse(localStorage.getItem("cart") || "[]");
+    const existingItem = cart.find(item => item._id === product._id);
+
+    if (existingItem) {
+      existingItem.quantity += 1;
+    } else {
+      cart.push({
+        _id: product._id,
+        name: product.name,
+        price: product.price,
+        image: product.image,
+        quantity: 1
+      });
+    }
+
+    localStorage.setItem("cart", JSON.stringify(cart));
+    alert("Product added to cart!");
+  };
+
   return (
     <div className="product-card"onClick={() => navigate(`/product/${product._id}`)}>
       <div className="product-image">
@@ -23,7 +43,7 @@ function ProductCard({ product }) {
         <button
           onClick={(e) => {
             e.stopPropagation();
-            console.log("Add to cart");
+            addToCart();
           }}
         >
           Add to Cart
@@ -32,7 +52,7 @@ function ProductCard({ product }) {
         <button
           onClick={(e) => {
             e.stopPropagation();
-            console.log("Refer");
+            console.log("Share and Earn Discount");
           }}
         >
           Refer
