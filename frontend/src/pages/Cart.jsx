@@ -1,57 +1,81 @@
 import { useState, useEffect } from "react";
+import { apiRequest } from "../utils/api";
 import "../styles/cart.css";
 
 function Cart() {
-  const [cartItems, setCartItems] = useState([]);
-  const [total, setTotal] = useState(0);
+  const [cart, setCart] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    // Load cart from localStorage
-    const savedCart = localStorage.getItem("cart");
-    if (savedCart) {
-      const items = JSON.parse(savedCart);
-      setCartItems(items);
-      calculateTotal(items);
-    }
+    fetchCart();
   }, []);
 
-  const calculateTotal = (items) => {
-    const totalAmount = items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-    setTotal(totalAmount);
-  };
-
-  const updateQuantity = (productId, newQuantity) => {
-    if (newQuantity <= 0) {
-      removeItem(productId);
-      return;
+  const fetchCart = async () => {
+    try {
+      setLoading(true);
+      const cartData = await apiRequest("/cart/cart");
+      setCart(cartData);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
     }
-
-    const updatedItems = cartItems.map(item =>
-      item._id === productId ? { ...item, quantity: newQuantity } : item
-    );
-
-    setCartItems(updatedItems);
-    localStorage.setItem("cart", JSON.stringify(updatedItems));
-    calculateTotal(updatedItems);
   };
 
-  const removeItem = (productId) => {
-    const updatedItems = cartItems.filter(item => item._id !== productId);
-    setCartItems(updatedItems);
-    localStorage.setItem("cart", JSON.stringify(updatedItems));
-    calculateTotal(updatedItems);
+  const updateQuantity = async (productId, newQuantity) => {
+    try {
+      await apiRequest("/cart/update", {
+        method: "POST",
+        body: JSON.stringify({ productId, quantity: newQuantity }),
+      });
+      await fetchCart(); // Refresh cart
+    } catch (err) {
+      setError(err.message);
+    }
+  };
+
+  const removeItem = async (productId) => {
+    try {
+      await apiRequest("/cart/remove", {
+        method: "POST",
+        body: JSON.stringify({ productId }),
+      });
+      await fetchCart(); // Refresh cart
+    } catch (err) {
+      setError(err.message);
+    }
   };
 
   const clearCart = () => {
-    setCartItems([]);
-    setTotal(0);
-    localStorage.removeItem("cart");
+    // This would need a clear cart endpoint in backend
+    alert("Clear cart functionality needs backend implementation");
   };
 
   const checkout = () => {
-    // For now, just show an alert. In a real app, this would redirect to checkout
     alert("Checkout functionality would be implemented here!");
   };
+
+  if (loading) {
+    return (
+      <div className="cart-container">
+        <h2>Your Cart</h2>
+        <p>Loading...</p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="cart-container">
+        <h2>Your Cart</h2>
+        <p>Error: {error}</p>
+      </div>
+    );
+  }
+
+  const cartItems = cart?.items || [];
+  const total = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
 
   if (cartItems.length === 0) {
     return (
@@ -77,7 +101,7 @@ function Cart() {
               : `http://localhost:5000${item.image}`;
 
           return (
-            <div key={item._id} className="cart-item">
+            <div key={item.productId} className="cart-item">
               <div className="cart-item-image">
                 <img src={imageUrl} alt={item.name} />
               </div>
@@ -89,14 +113,14 @@ function Cart() {
 
               <div className="cart-item-quantity">
                 <button
-                  onClick={() => updateQuantity(item._id, item.quantity - 1)}
+                  onClick={() => updateQuantity(item.productId, item.quantity - 1)}
                   className="quantity-btn"
                 >
                   -
                 </button>
                 <span className="quantity">{item.quantity}</span>
                 <button
-                  onClick={() => updateQuantity(item._id, item.quantity + 1)}
+                  onClick={() => updateQuantity(item.productId, item.quantity + 1)}
                   className="quantity-btn"
                 >
                   +
@@ -108,7 +132,7 @@ function Cart() {
               </div>
 
               <button
-                onClick={() => removeItem(item._id)}
+                onClick={() => removeItem(item.productId)}
                 className="remove-btn"
               >
                 Remove

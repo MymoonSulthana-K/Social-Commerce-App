@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router-dom";
+import { apiRequest } from "../utils/api";
 
 function ProductCard({ product }) {
 
@@ -9,24 +10,16 @@ function ProductCard({ product }) {
       ? product.image
       : `http://localhost:5000${product.image}`;
 
-  const addToCart = () => {
-    const cart = JSON.parse(localStorage.getItem("cart") || "[]");
-    const existingItem = cart.find(item => item._id === product._id);
-
-    if (existingItem) {
-      existingItem.quantity += 1;
-    } else {
-      cart.push({
-        _id: product._id,
-        name: product.name,
-        price: product.price,
-        image: product.image,
-        quantity: 1
+  const addToCart = async () => {
+    try {
+      await apiRequest("/cart/add", {
+        method: "POST",
+        body: JSON.stringify({ product }),
       });
+      alert("Product added to cart!");
+    } catch (err) {
+      alert("Failed to add to cart: " + err.message);
     }
-
-    localStorage.setItem("cart", JSON.stringify(cart));
-    alert("Product added to cart!");
   };
 
   return (

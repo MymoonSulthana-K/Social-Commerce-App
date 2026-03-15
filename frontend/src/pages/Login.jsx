@@ -15,7 +15,6 @@ function Login() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.message || "Login failed");
       localStorage.setItem("token", data.token);
-      alert("Login successful");
       window.location.href = "/";
     } catch (err) {
       alert(err.message || "Login failed");
