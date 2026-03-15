@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import "../styles/Navbar.css";
 
 function Navbar() {
-
+    const token = localStorage.getItem("token");
     return (
 
         <nav className="navbar">
@@ -12,7 +12,14 @@ function Navbar() {
                 <Link to="/products">Products</Link>
                 <Link to="/login">Login</Link>
                 <Link to="/register">Register</Link>
-           </div>
+                
+                {token ? (
+                    <Link to="/profile">Profile</Link>
+                ) : (
+                    <>
+                    </>
+                )}
+            </div>
         </nav>
     )
 }

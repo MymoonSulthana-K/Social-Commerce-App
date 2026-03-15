@@ -1,4 +1,4 @@
-const User = require("../models/user");
+const User = require("../models/User");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
@@ -72,5 +72,21 @@ exports.loginUser = async (req,res) => {
     } catch(error){
         res.status(500).json({message:error.message});
     }
+
+};
+
+exports.getUserProfile = async (req, res) => {
+
+  const user = await User.findById(req.user._id).select("-password");
+
+  if (user) {
+    res.json({
+      _id: user._id,
+      name: user.name,
+      email: user.email
+    });
+  } else {
+    res.status(404).json({ message: "User not found" });
+  }
 
 };

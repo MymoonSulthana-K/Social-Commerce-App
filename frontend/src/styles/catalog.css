@@ -27,6 +27,7 @@ box-shadow:0 8px 18px rgba(0,0,0,0.08);
 .product-image{
   height:360px;
   overflow:hidden;
+  object-fit: cover;
 }
 
 .product-image img{
