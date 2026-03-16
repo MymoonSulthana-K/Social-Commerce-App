@@ -7,6 +7,7 @@ function ProductDetails(){
   const { id } = useParams();
   const [product, setProduct] = useState(null);
 
+  // Fetch product details when component mounts or id changes
   useEffect(() => {
 
     fetch(`http://localhost:5000/api/products/${id}`)

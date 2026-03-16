@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { apiRequest } from "../utils/api";
 import "../styles/cart.css";
+import { Link } from "react-router-dom";
 
 function Cart() {
   const [cart, setCart] = useState(null);
@@ -47,14 +48,17 @@ function Cart() {
     }
   };
 
-  const clearCart = () => {
-    // This would need a clear cart endpoint in backend
-    alert("Clear cart functionality needs backend implementation");
+  const clearCart = async () => {
+    try {
+      await apiRequest("/cart/clear", {
+        method: "POST"
+      });
+      await fetchCart();
+    } catch (err) {
+      setError(err.message);
+    }
   };
 
-  const checkout = () => {
-    alert("Checkout functionality would be implemented here!");
-  };
 
   if (loading) {
     return (
@@ -151,9 +155,9 @@ function Cart() {
           <button onClick={clearCart} className="btn secondary">
             Clear Cart
           </button>
-          <button onClick={checkout} className="btn primary">
-            Checkout
-          </button>
+          <Link to="/checkout" className="btn primary">
+    Proceed to Checkout
+  </Link>
         </div>
       </div>
     </div>

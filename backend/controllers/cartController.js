@@ -101,3 +101,19 @@ exports.removeItem = async (req, res) => {
     res.status(404).json({ message: "Item not found in cart" });
   }
 };
+
+exports.clearCart = async (req, res) => {
+
+  const cart = await Cart.findOne({ user: req.user._id });
+
+  if (!cart) {
+    return res.status(404).json({ message: "Cart not found" });
+  }
+
+  cart.items = [];
+
+  await cart.save();
+
+  res.json({ message: "Cart cleared", cart });
+
+};

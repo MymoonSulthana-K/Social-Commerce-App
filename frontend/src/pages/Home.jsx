@@ -5,7 +5,7 @@ import homeImage from "../assests/images/home.jpg"
 function Home() {
   return (
     <div className="home">
-      {/* HERO SECTION */}
+
       <section className="hero">
         <div className="hero-text">
           <h1>Elevate Your Office Style</h1>

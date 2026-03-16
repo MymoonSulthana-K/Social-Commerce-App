@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import "../styles/Navbar.css";
 
 function Navbar() {
-    const token = localStorage.getItem("token");
+    const token = localStorage.getItem("token"); // Check if the user is logged in by checking for a token in localStorage
     return (
 
         <nav className="navbar">
