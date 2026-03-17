@@ -18,6 +18,7 @@ app.use("/api/auth",require("./routes/authRoutes"));
 app.use("/api/products", require("./routes/productRoutes"));
 app.use("/api/cart", require("./routes/cartRoutes"));
 app.use("/api/orders", require("./routes/orderRoutes"));
+app.use("/api/referral", require("./routes/referralRoutes"));
 
 app.listen(5000,()=>{
     console.log("Server running on port 5000");

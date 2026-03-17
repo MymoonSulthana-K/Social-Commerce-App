@@ -1,8 +1,10 @@
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { apiRequest } from "../utils/api";
+import ReferralModal from "./ReferralModal"; // Import the modal we built
 
 function ProductCard({ product }) {
-
+  const [showReferralModal, setShowReferralModal] = useState(false);
   const navigate = useNavigate();
 
   const imageUrl =
@@ -23,35 +25,49 @@ function ProductCard({ product }) {
   };
 
   return (
-    <div className="product-card"onClick={() => navigate(`/product/${product._id}`)}>
-      <div className="product-image">
-      <img src={imageUrl} alt={product.name} />
+    <>
+      <div 
+        className="product-card" 
+        onClick={() => navigate(`/product/${product._id}`)}
+      >
+        <div className="product-image">
+          <img src={imageUrl} alt={product.name} />
+        </div>
+
+        <h3>{product.name}</h3>
+        <p className="price">₹{product.price}</p>
+
+        <div className="product-buttons">
+          <button
+            className="add-to-cart-btn"
+            onClick={(e) => {
+              e.stopPropagation(); // Prevents navigating to details page
+              addToCart();
+            }}
+          >
+            Add to Cart
+          </button>
+
+          <button
+            className="refer-btn"
+            onClick={(e) => {
+              e.stopPropagation(); // Prevents navigating to details page
+              setShowReferralModal(true); // Opens the modal
+            }}
+          >
+            Refer
+          </button>
+        </div>
       </div>
 
-      <h3>{product.name}</h3>
-      <p>₹{product.price}</p>
-
-      <div className="product-buttons">
-
-        <button
-          onClick={(e) => {
-            e.stopPropagation();
-            addToCart();
-          }}
-        >
-          Add to Cart
-        </button>
-
-        <button
-          onClick={(e) => {
-            e.stopPropagation();
-            console.log("Share and Earn Discount");
-          }}
-        >
-          Refer
-        </button>
-      </div>
-    </div>
+      {/* Conditionally render the Modal */}
+      {showReferralModal && (
+        <ReferralModal 
+          product={product} 
+          onClose={() => setShowReferralModal(false)} 
+        />
+      )}
+    </>
   );
 }
 

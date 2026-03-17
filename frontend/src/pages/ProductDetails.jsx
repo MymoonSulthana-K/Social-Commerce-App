@@ -1,8 +1,27 @@
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import "../styles/productDetails.css";
+import { useSearchParams } from "react-router-dom";
+import ReferralModal from "../components/ReferralModal"
 
-function ProductDetails(){
+function ProductDetails() {
+  const [showModal, setShowModal] = useState(false);
+  const [searchParams] = useSearchParams();
+  const refCode = searchParams.get('ref');
+
+  useEffect(() => {
+    if (refCode) {
+      // Store in localStorage so it persists if they navigate away and come back
+      localStorage.setItem('activeReferral', refCode);
+    }
+  }, [refCode]);
+
+  // When calling placeOrder, pull from localStorage
+  const handleCheckout = () => {
+    const storedRef = localStorage.getItem('activeReferral');
+    // Send storedRef to your backend API
+  };
+
 
   const { id } = useParams();
   const [product, setProduct] = useState(null);
@@ -16,7 +35,7 @@ function ProductDetails(){
 
   }, [id]);
 
-  if(!product){
+  if (!product) {
     return <h2 className="loading">Loading...</h2>;
   }
 
@@ -45,7 +64,7 @@ function ProductDetails(){
     alert("Product added to cart!");
   };
 
-  return(
+  return (
 
     <div className="product-details-container">
 
@@ -81,13 +100,18 @@ function ProductDetails(){
             Add to Cart
           </button>
 
-          <button className="refer-btn">
-            Refer
+          <button onClick={() => setShowModal(true)} className="refer-btn">
+            Refer & Earn 50%
           </button>
+
+          {/* Render the Modal conditionally */}
+          {showModal && (
+            <ReferralModal
+              product={product}
+              onClose={() => setShowModal(false)}
+            />)}
         </div>
-
       </div>
-
     </div>
 
   )
