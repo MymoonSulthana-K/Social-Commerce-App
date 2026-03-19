@@ -52,13 +52,25 @@
   opacity: 0.9;
 }
 
-/* Info Box */
-.referral-info {
-  background: var(--background);
+/* Success Message */
+.success-message {
+  background: linear-gradient(135deg, #4caf50, #66bb6a);
+  color: white;
   padding: 20px;
   border-radius: 8px;
   margin: 15px 0;
-  border: 1px dashed var(--highlight);
+  text-align: center;
+}
+
+.success-text {
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin-bottom: 8px;
+}
+
+.success-message p {
+  margin: 5px 0;
+  font-weight: 500;
 }
 
 .referral-info p {
@@ -96,6 +108,33 @@
   border-radius: 6px;
   cursor: pointer;
   font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.copy-box button:hover {
+  opacity: 0.9;
+  transform: scale(1.05);
+}
+
+.copy-box button.copied {
+  background: #4caf50;
+}
+
+/* Close button */
+.close-btn {
+  background: var(--secondary);
+  color: var(--button-text);
+  padding: 10px 20px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  margin-top: 15px;
+  transition: opacity 0.2s;
+}
+
+.close-btn:hover {
+  opacity: 0.8;
 }
 
 /* Close link/button */

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { apiRequest } from "../utils/api";
-import ReferralModal from "./ReferralModal"; // Import the modal we built
+import ReferralModal from "./ReferralModal";
 
 function ProductCard({ product }) {
   const [showReferralModal, setShowReferralModal] = useState(false);

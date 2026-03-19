@@ -35,6 +35,10 @@ const orderSchema = new mongoose.Schema({
     type: String,
     default: "Placed"
   },
+  referralCode: {
+    type: String,
+    default: null
+  },
   createdAt: {
     type: Date,
     default: Date.now

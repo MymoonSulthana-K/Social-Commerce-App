@@ -1,7 +1,7 @@
-import { useParams } from "react-router-dom";
+import { useParams, useSearchParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import "../styles/productDetails.css";
-import { useSearchParams } from "react-router-dom";
+import { apiRequest } from "../utils/api";
 import ReferralModal from "../components/ReferralModal"
 
 function ProductDetails() {
@@ -15,13 +15,6 @@ function ProductDetails() {
       localStorage.setItem('activeReferral', refCode);
     }
   }, [refCode]);
-
-  // When calling placeOrder, pull from localStorage
-  const handleCheckout = () => {
-    const storedRef = localStorage.getItem('activeReferral');
-    // Send storedRef to your backend API
-  };
-
 
   const { id } = useParams();
   const [product, setProduct] = useState(null);
@@ -44,24 +37,23 @@ function ProductDetails() {
       ? product.image
       : `http://localhost:5000${product.image}`;
 
-  const addToCart = () => {
-    const cart = JSON.parse(localStorage.getItem("cart") || "[]");
-    const existingItem = cart.find(item => item._id === product._id);
-
-    if (existingItem) {
-      existingItem.quantity += 1;
-    } else {
-      cart.push({
-        _id: product._id,
-        name: product.name,
-        price: product.price,
-        image: product.image,
-        quantity: 1
+  const addToCart = async () => {
+    try {
+      await apiRequest("/cart/add", {
+        method: "POST",
+        body: JSON.stringify({
+          product: {
+            _id: product._id,
+            name: product.name,
+            price: product.price,
+            image: product.image
+          }
+        })
       });
+      alert("Product added to cart!");
+    } catch (err) {
+      alert("Error adding to cart: " + err.message);
     }
-
-    localStorage.setItem("cart", JSON.stringify(cart));
-    alert("Product added to cart!");
   };
 
   return (

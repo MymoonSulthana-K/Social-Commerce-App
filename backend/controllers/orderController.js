@@ -1,72 +1,85 @@
 const Order = require("../models/Order");
-//const Referral = require("../models/Referral");
+const Referral = require("../models/Referral");
 const User = require("../models/User");
 const Cart = require("../models/Cart");
 
 exports.createOrder = async (req, res) => {
   try {
-    const { items, shippingInfo, paymentMethod, total, referralCode } = req.body;
+    const { items, shippingInfo, paymentMethod, total, referralCode, discountedItems } = req.body;
 
-
-    const order = await Order.create({
-  user: req.user._id,
-
-  items: items.map(item => ({
-    productId: item._id,
-    name: item.name,
-    price: item.price,
-    image: item.image,
-    quantity: item.quantity
-  })),
-  totalAmount: total,
-  shippingInfo,
-  paymentMethod,
-  status: "Placed"
-});
+    console.log("Order being created with referralCode:", referralCode);
+    console.log("User ID:", req.user._id);
 
     // Handle referral logic if referral code is provided
-    // if (referralCode) {
-    //   const referral = await Referral.findOne({ referralCode });
+    if (referralCode) {
+      const referral = await Referral.findOne({ 
+        referralCode, 
+        expiresAt: { $gt: new Date() } 
+      });
+      
+      console.log("Referral found:", referral);
+      
+      if (referral) {
+        // Convert both to strings for proper comparison
+        const userIdString = req.user._id.toString();
+        const buyerIds = referral.buyers.map(id => id.toString());
+        
+        console.log("Checking if user already in buyers:", buyerIds, userIdString);
+        
+        // Check if user hasn't already purchased through this referral
+        if (!buyerIds.includes(userIdString)) {
+          referral.buyers.push(req.user._id);
+          
+          console.log("Adding buyer to referral. New buyers count:", referral.buyers.length);
+          
+          // Check if referral is now completed (3 or more unique buyers)
+          if (referral.buyers.length >= 3) {
+            referral.isCompleted = true;
+            console.log("Referral completed!");
+          }
+          
+          await referral.save();
+          console.log("Referral saved successfully");
+        } else {
+          console.log("User already purchased using this referral");
+        }
+      } else {
+        console.log("Referral code expired, invalid, or not found:", referralCode);
+      }
+    } else {
+      console.log("No referral code provided");
+    }
 
-    //   if (referral && referral.expiresAt > new Date()) {
-    //     // Check if user already purchased through this referral
-    //     const existingPurchase = referral.purchases.find(p =>
-    //       p.user.toString() === req.user._id.toString()
-    //     );
+    const order = await Order.create({
+      user: req.user._id,
+      items: items.map(item => ({
+        productId: item._id || item.productId,
+        name: item.name,
+        price: item.price,
+        image: item.image,
+        quantity: item.quantity
+      })),
+      totalAmount: total,
+      shippingInfo,
+      paymentMethod,
+      status: "Placed",
+      referralCode: referralCode || null
+    });
 
-    //     if (!existingPurchase) {
-    //       // Add purchase to referral
-    //       referral.purchases.push({
-    //         user: req.user._id,
-    //         purchasedAt: new Date()
-    //       });
-
-    //       await referral.save();
-
-    //       // Check if reward conditions are met (3 purchases within 24 hours)
-    //       if (referral.purchases.length >= 3) {
-    //         // Apply reward to referrer
-    //         const referrer = await User.findById(referral.referrer);
-
-    //         if (!referrer.rewards) {
-    //           referrer.rewards = [];
-    //         }
-
-    //         referrer.rewards.push({
-    //           type: "referral_discount",
-    //           amount: 100, // ₹100 discount
-    //           description: `Referral reward for ${referral.purchases.length} successful referrals`,
-    //           date: new Date()
-    //         });
-
-    //         await referrer.save();
-    //       }
-    //     }
-    //   }
-    // }
-
-        // 3. CLEAR THE CART for this specific user
+    // Clear the cart for this user
     await Cart.findOneAndDelete({ user: req.user._id });
+
+    // Reset referrals for discounted items (referrer used their discount)
+    if (discountedItems && discountedItems.length > 0) {
+      for (const productId of discountedItems) {
+        await Referral.findOneAndDelete({
+          referrerId: req.user._id,
+          productId,
+          isCompleted: true
+        });
+        console.log(`Referral deleted for product ${productId} after referrer used discount`);
+      }
+    }
 
     res.json({
       success: true,
@@ -75,9 +88,10 @@ exports.createOrder = async (req, res) => {
     });
 
   } catch (error) {
+    console.error("Order creation error:", error);
     res.status(500).json({ message: error.message });
   }
-};
+}  
 
 exports.getUserOrders = async (req, res) => {
   try {

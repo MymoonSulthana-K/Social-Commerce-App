@@ -8,11 +8,10 @@ function OrderConfirmation() {
   const [order, setOrder] = useState(null);
 
   useEffect(() => {
-    // Check if order data was passed through the navigate state
+    // Checkingorder details is passed hrough usenavigate
     if (location.state?.order) {
       setOrder(location.state.order);
     } else {
-      // If no order data is existing means redirect to home
       navigate("/");
     }
   }, [location, navigate]);

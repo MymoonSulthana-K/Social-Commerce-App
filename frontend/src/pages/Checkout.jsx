@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import "../styles/checkout.css";
 import { apiRequest } from "../utils/api";
 
@@ -7,6 +7,7 @@ function Checkout() {
   const [cartItems, setCartItems] = useState([]);
   const [total, setTotal] = useState(0);
   const [discountedItems, setDiscountedItems] = useState([]); // Track which products get 50% off
+  const [referralCode, setReferralCode] = useState(null);
   const [shippingInfo, setShippingInfo] = useState({
     name: "",
     email: "",
@@ -17,17 +18,28 @@ function Checkout() {
   });
   const [paymentMethod, setPaymentMethod] = useState("card");
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
 
-  // 1. Fetch Cart and then calculate discounted total
+  //Fetch Cart and then calculate discounted total
   useEffect(() => {
     const fetchCartForCheckout = async () => {
       try {
+
+        let ref = searchParams.get("ref");
+        if (!ref) {
+          ref = localStorage.getItem('activeReferral');
+        }
+        if (ref) {
+          setReferralCode(ref);
+          localStorage.setItem('activeReferral', ref);
+        }
+
         const cartData = await apiRequest("/cart/cart");
 
         if (cartData && cartData.items.length > 0) {
           setCartItems(cartData.items);
-          // Pass items directly to calculation to ensure state sync
-          await calculateTotal(cartData.items);
+          // Calculate total with referral discounts if applicable
+          await calculateTotal(cartData.items, ref);
         } else {
           navigate("/cart");
         }
@@ -38,27 +50,26 @@ function Checkout() {
     };
 
     fetchCartForCheckout();
-  }, [navigate]);
+  }, [navigate, searchParams]);
 
-  // 2. Modified calculateTotal to check Referral Status per product
-  const calculateTotal = async (items) => {
+  // 2. Modified calculateTotal to check Referral Status per product and handle referral code
+  const calculateTotal = async (items, refCode = null) => {
     let currentSubtotal = 0;
     let dItems = [];
 
+    // Check for completed referral sessions for each product
     for (const item of items) {
       try {
-        // Check if the current user has a completed referral session for this product
         const status = await apiRequest(`/referral/status/${item.productId}`);
         
         if (status && status.isCompleted) {
-          // Apply 50% discount
+          // Apply 50% discount for referrer
           currentSubtotal += (item.price * 0.5) * item.quantity;
-          dItems.push(item.productId); // Mark as discounted for UI
+          dItems.push(item.productId);
         } else {
           currentSubtotal += item.price * item.quantity;
         }
       } catch (err) {
-        // Fallback to normal price if API fails or no referral exists
         currentSubtotal += item.price * item.quantity;
       }
     }
@@ -87,8 +98,13 @@ function Checkout() {
 
     try {
       const token = localStorage.getItem("token");
+      
+      let ref = searchParams.get("ref");
+      if (!ref) {
+        ref = localStorage.getItem('activeReferral');
+      }
 
-      // Send the final calculated total and items to the backend
+      // Sending calculated total and items to the backend
       const response = await fetch("http://localhost:5000/api/orders/create", {
         method: "POST",
         headers: {
@@ -99,8 +115,9 @@ function Checkout() {
           items: cartItems,
           shippingInfo,
           paymentMethod,
-          total, // This is the total after referral discounts
-          discountedItems // Helpful for backend verification
+          total, 
+          discountedItems,
+          referralCode: ref // Includes referral code if exists
         })
       });
 
@@ -108,6 +125,7 @@ function Checkout() {
 
       if (response.ok) {
         localStorage.removeItem("cart");
+        localStorage.removeItem("activeReferral")
         navigate("/order-confirmation", {
           state: {
             order: {
@@ -128,7 +146,6 @@ function Checkout() {
     }
   };
 
-  // UI Helper for Subtotal (for display purposes)
   const displaySubtotal = total - (total > 500 || total === 0 ? 0 : 50);
 
   return (
