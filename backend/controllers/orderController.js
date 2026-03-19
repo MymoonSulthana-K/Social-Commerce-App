@@ -4,22 +4,6 @@ const User = require("../models/User");
 const Cart = require("../models/Cart");
 
 exports.createOrder = async (req, res) => {
-  // Inside your placeOrder function
-const { referralCode } = req.body; 
-
-if (referralCode) {
-  const session = await Referral.findOne({ referralCode, expiresAt: { $gt: new Date() } });
-  
-  if (session && !session.buyers.includes(req.user._id)) {
-    session.buyers.push(req.user._id);
-    
-    if (session.buyers.length >= 3) {
-      session.isCompleted = true;
-    }
-    await session.save();
-  }
-}
-
   try {
     const { items, shippingInfo, paymentMethod, total, referralCode } = req.body;
 
