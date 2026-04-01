@@ -1,5 +1,6 @@
 import { useParams, useSearchParams } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { BadgeCheck, ShieldCheck, Sparkles, Star, Truck } from "lucide-react";
 import "../styles/productDetails.css";
 import { apiRequest } from "../utils/api";
 import ReferralModal from "../components/ReferralModal"
@@ -37,6 +38,19 @@ function ProductDetails() {
       ? product.image
       : `http://localhost:5000${product.image}`;
 
+  const rating = product.category?.toLowerCase().includes("watch") ? "4.6" : "4.7";
+  const reviewCount = product.category?.toLowerCase().includes("shoe") ? 96 : 124;
+  const productHighlights = [
+    "Tailored for polished office and event wear",
+    "Easy-to-style neutral finish for repeat use",
+    "Curated quality selected for comfort and structure"
+  ];
+  const purchaseNotes = [
+    { icon: <Truck size={18} />, text: "Free shipping on prepaid orders" },
+    { icon: <ShieldCheck size={18} />, text: "Secure checkout and protected payments" },
+    { icon: <BadgeCheck size={18} />, text: "Easy returns on eligible items" }
+  ];
+
   const addToCart = async () => {
     try {
       await apiRequest("/cart/add", {
@@ -73,6 +87,16 @@ function ProductDetails() {
 
       {/* Product Info */}
       <div className="product-info-section">
+        <div className="product-meta-row">
+          <span className="product-category-badge">
+            {product.category || "Formalwear"}
+          </span>
+          <span className="product-rating">
+            <Star size={16} fill="currentColor" />
+            {rating}
+            <span className="product-rating-count">({reviewCount} reviews)</span>
+          </span>
+        </div>
 
         <h1 className="product-title">
           {product.name}
@@ -85,6 +109,30 @@ function ProductDetails() {
         <p className="product-description">
           {product.description}
         </p>
+
+        <div className="product-detail-card">
+          <div className="product-detail-header">
+            <Sparkles size={18} />
+            <h3>Why shoppers like it</h3>
+          </div>
+          <div className="product-highlights">
+            {productHighlights.map((highlight) => (
+              <div key={highlight} className="product-highlight-item">
+                <span className="product-highlight-dot"></span>
+                <p>{highlight}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="product-purchase-notes">
+          {purchaseNotes.map((note) => (
+            <div key={note.text} className="purchase-note">
+              {note.icon}
+              <span>{note.text}</span>
+            </div>
+          ))}
+        </div>
 
         <div className="product-actions">
 
@@ -100,8 +148,23 @@ function ProductDetails() {
           {showModal && (
             <ReferralModal
               product={product}
-              onClose={() => setShowModal(false)}
+            onClose={() => setShowModal(false)}
             />)}
+        </div>
+
+        <div className="product-assurance">
+          <div className="assurance-stat">
+            <strong>{rating}/5</strong>
+            <span>Customer rating</span>
+          </div>
+          <div className="assurance-stat">
+            <strong>24 hrs</strong>
+            <span>Referral reward window</span>
+          </div>
+          <div className="assurance-stat">
+            <strong>50%</strong>
+            <span>Referral earn potential</span>
+          </div>
         </div>
       </div>
     </div>

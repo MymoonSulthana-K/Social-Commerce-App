@@ -16,14 +16,14 @@ function Navbar() {
             <div className="nav-center">
                 <SearchBar />
                 <div className="nav-links">
-                    <Link to="/">Home</Link>
-                    <Link to="/products">Products</Link>
-                    <Link to="/cart">Cart</Link>
+                    <Link to="/">HOME</Link>
+                    <Link to="/products">PRODUCTS</Link>
+                    <Link to="/cart">CART</Link>
 
                     {!token && (
                         <>
-                            <Link to="/login">Login</Link>
-                            <Link to="/register">Register</Link>
+                            <Link to="/login">LOGIN</Link>
+                            <Link to="/register">REGISTER</Link>
                         </>
                     )}
                 </div>
