@@ -1,0 +1,29 @@
+.search-bar {
+display: flex;
+align-items: center;
+gap: 10px;
+width: min(320px, 100%);
+padding: 10px 14px;
+border: 1px solid var(--secondary);
+border-radius: 999px;
+background: var(--background);
+}
+
+.search-bar__icon {
+color: var(--paragraph);
+flex-shrink: 0;
+}
+
+.search-bar__input {
+width: 100%;
+border: none;
+outline: none;
+background: transparent;
+color: var(--headline);
+font: inherit;
+}
+
+.search-bar__input::placeholder {
+color: var(--paragraph);
+opacity: 0.8;
+}

@@ -1,28 +1,45 @@
 import { Link } from "react-router-dom";
+import { Package, User } from "lucide-react";
+import SearchBar from "./SearchBar";
 import "../styles/Navbar.css";
 
 function Navbar() {
-    const token = localStorage.getItem("token"); // Check if the user is logged in by checking for a token in localStorage
-    return (
+    const token = localStorage.getItem("token");
+    const profilePath = token ? "/profile" : "/login";
 
+    return (
         <nav className="navbar">
-            <h2 className="logo">Formali</h2>
-            <div className="nav-links">
-                <Link to="/">Home</Link>
-                <Link to="/products">Products</Link>
-                <Link to="/cart">Cart</Link>
-                
-                {token ? (
-                    <Link to="/profile">Profile</Link>
-                ) : (
-                    <>
-                        <Link to="/login">Login</Link>
-                        <Link to="/register">Register</Link>
-                    </>
-                )}
+            <Link to="/" className="logo">
+                Formali
+            </Link>
+
+            <div className="nav-center">
+                <SearchBar />
+                <div className="nav-links">
+                    <Link to="/">Home</Link>
+                    <Link to="/products">Products</Link>
+                    <Link to="/cart">Cart</Link>
+
+                    {!token && (
+                        <>
+                            <Link to="/login">Login</Link>
+                            <Link to="/register">Register</Link>
+                        </>
+                    )}
+                </div>
+            </div>
+
+            <div className="nav-actions">
+                <Link to="/orders" className="nav-icon-link" aria-label="Orders">
+                    <Package size={20} />
+                    <span>Orders</span>
+                </Link>
+                <Link to={profilePath} className="nav-icon-link profile-link" aria-label="Profile">
+                    <User size={20} />
+                </Link>
             </div>
         </nav>
-    )
+    );
 }
 
 export default Navbar;
