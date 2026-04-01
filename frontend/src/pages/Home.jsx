@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import "../styles/home.css";
 import homeImage from "../assests/images/heroimage.png";
-import { ArrowRight, Share2, Users, Clock, Gift } from "lucide-react";
+import { ArrowRight, Share2, Users, Clock, Gift, Search, X } from "lucide-react";
 import ProductCard from "../components/ProductCard";
 import { apiRequest } from "../utils/api";
 
@@ -110,7 +110,7 @@ function Home() {
 
       {/* FEATURES */}
       <section className="features">
-        <h2>How It Works</h2>
+        <h2>Get 50% Off Now!</h2>
 
         <div className="feature-grid">
           {features.map((f, i) => (
@@ -132,12 +132,24 @@ function Home() {
 
         <div className="product-controls">
           <div className="search-box">
+            <Search size={18} className="search-box__icon" aria-hidden="true" />
             <input
-              type="text"
-              placeholder="Search products..."
+              type="search"
+              placeholder="Search featured pieces like suits, shoes, or bags"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
+              aria-label="Search featured products"
             />
+            {search.trim() && (
+              <button
+                type="button"
+                className="search-box__clear"
+                onClick={() => setSearch("")}
+                aria-label="Clear search"
+              >
+                <X size={16} />
+              </button>
+            )}
           </div>
 
           <div className="category-chips">

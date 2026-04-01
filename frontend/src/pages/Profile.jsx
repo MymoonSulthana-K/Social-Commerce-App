@@ -1,11 +1,8 @@
 import { useEffect, useState } from "react";
-import "../styles/profile.css";
-import { apiRequest } from "../utils/api";
+import "../styles/profile.css"
 
 function Profile() {
-  const [orders, setOrders] = useState([]);
   const [user, setUser] = useState(null);
-  const [loadingOrders, setLoadingOrders] = useState(true);
   const [loadingUser, setLoadingUser] = useState(true);
   const [error, setError] = useState(null);
 
@@ -30,22 +27,7 @@ function Profile() {
         setLoadingUser(false);
       }
     };
-
-    // 2. Fetch Orders Data
-    const fetchOrders = async () => {
-      try {
-        setLoadingOrders(true);
-        const orderData = await apiRequest("/orders/my-orders");
-        setOrders(orderData || []);
-      } catch (err) {
-        console.error("Orders fetch error:", err.message);
-      } finally {
-        setLoadingOrders(false);
-      }
-    };
-
     fetchUser();
-    fetchOrders();
   }, []);
 
   // Handle Global Loading State
@@ -72,28 +54,6 @@ function Profile() {
         <button className="logout-btn" onClick={handleLogout}>
           Logout
         </button>
-      </div>
-
-      {/* ORDERS SECTION */}
-      <div className="profile-card">
-        <h1>Orders</h1>
-        <div className="profile-info">
-          {loadingOrders ? (
-            <p>Loading orders...</p>
-          ) : error ? (
-            <p className="error">{error}</p>
-          ) : orders.length > 0 ? (
-            <ul className="order-list">
-              {orders.map((order) => (
-                <li key={order._id} className="order-item">
-                  Order #{order._id.slice(-6)} - ₹{order.totalAmount}
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <p>No orders found.</p>
-          )}
-        </div>
       </div>
     </div>
   );
