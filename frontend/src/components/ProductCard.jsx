@@ -2,15 +2,13 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { apiRequest } from "../utils/api";
 import ReferralModal from "./ReferralModal";
+import { resolveImageUrl } from "../utils/images";
 
 function ProductCard({ product }) {
   const [showReferralModal, setShowReferralModal] = useState(false);
   const navigate = useNavigate();
 
-  const imageUrl =
-    product.image?.startsWith("http") || product.image?.startsWith("//")
-      ? product.image
-      : `http://localhost:5000${product.image}`;
+  const imageUrl = resolveImageUrl(product.image);
 
   const addToCart = async () => {
     try {

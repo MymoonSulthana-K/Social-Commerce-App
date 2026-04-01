@@ -15,7 +15,7 @@ const ReferralModal = ({ product, onClose }) => {
             });
             setSession(data);
         } catch (err) {
-            alert("Error starting referral");
+            alert(err.message || "Error starting referral");
         }
     };
 

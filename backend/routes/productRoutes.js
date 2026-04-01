@@ -12,18 +12,26 @@ router.get("/", async (req, res) => {
 
     //If subcategory is selected → use it directly
     if (subCategory) {
-      filter.category = subCategory;
-    }
-    //Else if only major category is selected
-    else if (category) {
+      filter.$or = [{ category: subCategory }, { subcategory: subCategory }];
+    } else if (category) {
       if (category === "Men") {
-        filter.category = {
-          $in: ["Men Suits", "Men Ties", "Men Shoes", "Men Watches"],
-        };
+        filter.$or = [
+          { parentCategory: "Men" },
+          {
+            category: {
+              $in: ["Men Suits", "Men Ties", "Men Shoes", "Men Watches"],
+            },
+          },
+        ];
       } else if (category === "Women") {
-        filter.category = {
-          $in: ["Business Suits", "Women Footwear", "Formal Bags", "Office Watches"],
-        };
+        filter.$or = [
+          { parentCategory: "Women" },
+          {
+            category: {
+              $in: ["Business Suits", "Women Footwear", "Formal Bags", "Office Watches", "Bags"],
+            },
+          },
+        ];
       }
     }
 

@@ -4,6 +4,7 @@ import { BadgeCheck, ShieldCheck, Sparkles, Star, Truck } from "lucide-react";
 import "../styles/productDetails.css";
 import { apiRequest } from "../utils/api";
 import ReferralModal from "../components/ReferralModal"
+import { resolveImageUrl } from "../utils/images";
 
 function ProductDetails() {
   const [showModal, setShowModal] = useState(false);
@@ -33,10 +34,7 @@ function ProductDetails() {
     return <h2 className="loading">Loading...</h2>;
   }
 
-  const imageUrl =
-    product.image?.startsWith("http") || product.image?.startsWith("//")
-      ? product.image
-      : `http://localhost:5000${product.image}`;
+  const imageUrl = resolveImageUrl(product.image);
 
   const rating = product.category?.toLowerCase().includes("watch") ? "4.6" : "4.7";
   const reviewCount = product.category?.toLowerCase().includes("shoe") ? 96 : 124;

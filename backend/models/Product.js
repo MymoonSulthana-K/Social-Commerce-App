@@ -11,12 +11,25 @@ const productSchema = new mongoose.Schema({
   description: {
     type: String
   },
+  parentCategory: {
+    type: String,
+    default: ""
+  },
   category: {
-    type: String
+    type: String,
+    default: ""
+  },
+  subcategory: {
+    type: String,
+    default: ""
+  },
+  tags: {
+    type: [String],
+    default: []
   },
   image: {
     type: String
   }
-});
+}, { timestamps: true });
 
 module.exports = mongoose.model("Product", productSchema);

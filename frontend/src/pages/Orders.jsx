@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { PackageSearch, ShoppingBag, Truck } from "lucide-react";
 import { apiRequest } from "../utils/api";
+import { resolveImageUrl } from "../utils/images";
 import "../styles/orders.css";
 
 function Orders() {
@@ -115,12 +116,7 @@ function Orders() {
 
                 <div className="order-items">
                   {(order.items || []).map((item, index) => {
-                    const imageUrl =
-                      item.image?.startsWith("http") || item.image?.startsWith("//")
-                        ? item.image
-                        : item.image
-                          ? `http://localhost:5000${item.image}`
-                          : "";
+                    const imageUrl = resolveImageUrl(item.image);
 
                     return (
                       <div

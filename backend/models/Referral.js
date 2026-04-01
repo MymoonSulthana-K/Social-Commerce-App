@@ -6,7 +6,8 @@ const referralSchema = new mongoose.Schema({
   referralCode: { type: String, unique: true, required: true },
   expiresAt: { type: Date, required: true }, // Set to Date.now() + 24h
   buyers: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }], // Track unique buyers
-  isCompleted: { type: Boolean, default: false }
-});
+  isCompleted: { type: Boolean, default: false },
+  discountApplied: { type: Boolean, default: false }
+}, { timestamps: true });
 
 module.exports = mongoose.model('Referral', referralSchema);

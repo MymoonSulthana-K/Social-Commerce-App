@@ -77,7 +77,7 @@ function OrderConfirmation() {
           <Link to="/products" className="btn continue-shopping">
             Continue Shopping
           </Link>
-          <Link to="/profile" className="btn view-orders">
+          <Link to="/orders" className="btn view-orders">
             View My Orders
           </Link>
         </div>

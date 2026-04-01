@@ -6,7 +6,7 @@ const categories = {
     { label: "Watches", value: "Men Watches" },
   ],
   Women: [
-    { label: "Suits", value: "Business Suits" },
+    { label: "Suits", value: "Women Suits" },
     { label: "Shoes", value: "Women Footwear" },
     { label: "Bags", value: "Bags" },
     { label: "Watches", value: "Women Watches" },

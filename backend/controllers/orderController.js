@@ -72,12 +72,14 @@ exports.createOrder = async (req, res) => {
     // Reset referrals for discounted items (referrer used their discount)
     if (discountedItems && discountedItems.length > 0) {
       for (const productId of discountedItems) {
-        await Referral.findOneAndDelete({
+        await Referral.findOneAndUpdate({
           referrerId: req.user._id,
           productId,
           isCompleted: true
+        }, {
+          discountApplied: true
         });
-        console.log(`Referral deleted for product ${productId} after referrer used discount`);
+        console.log(`Referral marked as discounted for product ${productId} after referrer used discount`);
       }
     }
 
