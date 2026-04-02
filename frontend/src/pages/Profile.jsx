@@ -5,7 +5,6 @@ import { apiRequest } from "../utils/api";
 function Profile() {
   const [user, setUser] = useState(null);
   const [loadingUser, setLoadingUser] = useState(true);
-  const [error, setError] = useState(null);
 
   useEffect(() => {
     // 1. Fetch User Data
@@ -22,7 +21,7 @@ function Profile() {
         });
         setUser(data);
       } catch (err) {
-        setError("Failed to load profile.");
+        console.error("Failed to load profile", err);
       } finally {
         setLoadingUser(false);
       }

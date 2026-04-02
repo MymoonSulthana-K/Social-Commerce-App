@@ -8,7 +8,6 @@ function Checkout() {
   const [cartItems, setCartItems] = useState([]);
   const [total, setTotal] = useState(0);
   const [discountedItems, setDiscountedItems] = useState([]); // Track which products get 50% off
-  const [referralCode, setReferralCode] = useState(null);
   const [shippingInfo, setShippingInfo] = useState({
     name: "",
     email: "",
@@ -31,7 +30,6 @@ function Checkout() {
           ref = localStorage.getItem('activeReferral');
         }
         if (ref) {
-          setReferralCode(ref);
           localStorage.setItem('activeReferral', ref);
         }
 
