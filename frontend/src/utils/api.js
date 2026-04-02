@@ -18,10 +18,23 @@ export const apiRequest = async (endpoint, options = {}) => {
     headers,
   });
 
+  const contentType = response.headers.get("content-type") || "";
+  const isJson = contentType.includes("application/json");
+  const responseBody = isJson ? await response.json() : await response.text();
+
   if (!response.ok) {
-    const error = await response.json().catch(() => ({ message: "An error occurred" }));
-    throw new Error(error.message || `HTTP error! status: ${response.status}`);
+    const message =
+      isJson && responseBody?.message
+        ? responseBody.message
+        : `Request failed (${response.status}) at ${url}`;
+    throw new Error(message);
   }
 
-  return response.json();
+  if (!isJson) {
+    throw new Error(
+      `Expected JSON but received "${contentType || "unknown"}" from ${url}. Check API base URL and Vercel routing.`
+    );
+  }
+
+  return responseBody;
 };
