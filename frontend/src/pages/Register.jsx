@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import "../styles/auth.css";
+import { apiRequest } from "../utils/api";
 
 function Register() {
   const [name, setName] = useState("");
@@ -11,15 +12,11 @@ function Register() {
     e.preventDefault(); // Prevent form from refreshing the page
 
     try {
-      const res = await fetch("http://localhost:5000/api/auth/register", {
+      await apiRequest("/auth/register", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name, email, password }),
       });
-
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.message || "Registration failed");
-        alert("Registration successful!");
+      alert("Registration successful!");
       window.location.href = "/login";
 
     } catch (err) {

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useLocation, Link, useNavigate } from "react-router-dom";
 import "../styles/orderConfirmation.css";
+import { resolveImageUrl } from "../utils/images";
 
 function OrderConfirmation() {
   const location = useLocation();
@@ -48,10 +49,7 @@ function OrderConfirmation() {
           <div className="order-items">
             <h3>Order Items</h3>
             {order.items.map((item, index) => {
-              const imageUrl =
-                item.image?.startsWith("http") || item.image?.startsWith("//")
-                  ? item.image
-                  : `http://localhost:5000${item.image}`;
+              const imageUrl = resolveImageUrl(item.image);
 
               return (
                 <div key={item._id || index} className="confirmation-item">

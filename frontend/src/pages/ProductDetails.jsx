@@ -23,10 +23,7 @@ function ProductDetails() {
 
   // Fetch product details when component mounts or id changes
   useEffect(() => {
-
-    fetch(`http://localhost:5000/api/products/${id}`)
-      .then(res => res.json())
-      .then(data => setProduct(data));
+    apiRequest(`/products/${id}`).then((data) => setProduct(data));
 
   }, [id]);
 

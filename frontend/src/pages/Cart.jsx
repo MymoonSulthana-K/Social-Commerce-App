@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { apiRequest } from "../utils/api";
 import "../styles/cart.css";
 import { Link } from "react-router-dom";
+import { resolveImageUrl } from "../utils/images";
 
 function Cart() {
   const [cart, setCart] = useState(null);
@@ -99,10 +100,7 @@ function Cart() {
 
       <div className="cart-items">
         {cartItems.map(item => {
-          const imageUrl =
-            item.image?.startsWith("http") || item.image?.startsWith("//")
-              ? item.image
-              : `http://localhost:5000${item.image}`;
+          const imageUrl = resolveImageUrl(item.image);
 
           return (
             <div key={item.productId} className="cart-item">

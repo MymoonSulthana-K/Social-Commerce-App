@@ -1,3 +1,5 @@
+import { ASSET_BASE_URL } from "./config";
+
 export const resolveImageUrl = (image) => {
   if (!image) return "";
 
@@ -9,5 +11,5 @@ export const resolveImageUrl = (image) => {
     return image;
   }
 
-  return `http://localhost:5000${image}`;
+  return `${ASSET_BASE_URL}${image}`;
 };

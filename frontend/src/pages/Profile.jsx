@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import "../styles/profile.css"
+import { apiRequest } from "../utils/api";
 
 function Profile() {
   const [user, setUser] = useState(null);
@@ -16,10 +17,9 @@ function Profile() {
       }
 
       try {
-        const res = await fetch("http://localhost:5000/api/auth/profile", {
-          headers: { Authorization: `Bearer ${token}` },
+        const data = await apiRequest("/auth/profile", {
+          headers: { Authorization: `Bearer ${token}` }
         });
-        const data = await res.json();
         setUser(data);
       } catch (err) {
         setError("Failed to load profile.");

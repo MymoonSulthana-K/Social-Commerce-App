@@ -3,6 +3,7 @@ import { useSearchParams } from "react-router-dom";
 import ProductCard from "../components/ProductCard";
 import CategorySidebar from "../components/CategorySidebar";
 import "../styles/catalog.css";
+import { apiRequest } from "../utils/api";
 
 function ProductCatalog() {
   const [products, setProducts] = useState([]);
@@ -15,12 +16,7 @@ function ProductCatalog() {
     if (selectedMajor) params.append("category", selectedMajor);
     if (selectedSub) params.append("subCategory", selectedSub);
 
-    const url =
-      "http://localhost:5000/api/products" +
-      (params.toString() ? `?${params.toString()}` : "");
-
-    fetch(url)
-      .then((res) => res.json())
+    apiRequest(`/products${params.toString() ? `?${params.toString()}` : ""}`)
       .then((data) => {
         if (Array.isArray(data)) {
           setProducts(data);

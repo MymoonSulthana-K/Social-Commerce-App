@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import "../styles/checkout.css";
 import { apiRequest } from "../utils/api";
+import { resolveImageUrl } from "../utils/images";
 
 function Checkout() {
   const [cartItems, setCartItems] = useState([]);
@@ -97,20 +98,14 @@ function Checkout() {
     }
 
     try {
-      const token = localStorage.getItem("token");
-      
       let ref = searchParams.get("ref");
       if (!ref) {
         ref = localStorage.getItem('activeReferral');
       }
 
       // Sending calculated total and items to the backend
-      const response = await fetch("http://localhost:5000/api/orders/create", {
+      const data = await apiRequest("/orders/create", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`
-        },
         body: JSON.stringify({
           items: cartItems,
           shippingInfo,
@@ -120,27 +115,20 @@ function Checkout() {
           referralCode: ref // Includes referral code if exists
         })
       });
-
-      const data = await response.json();
-
-      if (response.ok) {
-        localStorage.removeItem("cart");
-        localStorage.removeItem("activeReferral")
-        navigate("/order-confirmation", {
-          state: {
-            order: {
-              ...data,
-              items: cartItems,
-              shippingInfo,
-              paymentMethod,
-              total,
-              orderDate: new Date().toISOString()
-            }
+      localStorage.removeItem("cart");
+      localStorage.removeItem("activeReferral")
+      navigate("/order-confirmation", {
+        state: {
+          order: {
+            ...data,
+            items: cartItems,
+            shippingInfo,
+            paymentMethod,
+            total,
+            orderDate: new Date().toISOString()
           }
-        });
-      } else {
-        alert(data.message || "Failed to place order");
-      }
+        }
+      });
     } catch (error) {
       alert("Error placing order: " + error.message);
     }
@@ -212,7 +200,7 @@ function Checkout() {
           <div className="summary-items">
             {cartItems.map(item => {
               const isDiscounted = discountedItems.includes(item.productId);
-              const imageUrl = item.image?.startsWith("http") ? item.image : `http://localhost:5000${item.image}`;
+              const imageUrl = resolveImageUrl(item.image);
 
               return (
                 <div key={item._id} className="summary-item">
