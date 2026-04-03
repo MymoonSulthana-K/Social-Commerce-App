@@ -23,6 +23,16 @@ app.get("/api/health", async (req, res) => {
     }
 });
 
+app.use("/api", async (req, res, next) => {
+    try {
+        await connectDB();
+        next();
+    } catch (error) {
+        res.status(503).json({
+            message: `Database connection failed: ${error.message}`,
+        });
+    }
+});
 
 app.use("/api/auth",require("./routes/authRoutes"));
 app.use("/api/products", require("./routes/productRoutes"));
