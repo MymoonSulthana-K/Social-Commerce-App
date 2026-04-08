@@ -5,10 +5,11 @@ const Cart = require("../models/Cart");
 
 exports.createOrder = async (req, res) => {
   try {
-    const { items, shippingInfo, paymentMethod, total, referralCode, discountedItems } = req.body;
+    const { items, shippingInfo, paymentMethod, total, referralCode, discountedItems, referredDiscountApplied } = req.body;
 
     console.log("Order being created with referralCode:", referralCode);
     console.log("User ID:", req.user._id);
+    console.log("Referred discount applied:", referredDiscountApplied);
 
     // Handle referral logic if referral code is provided
     if (referralCode) {
@@ -48,6 +49,23 @@ exports.createOrder = async (req, res) => {
       }
     } else {
       console.log("No referral code provided");
+    }
+
+    // Handle referred user discount claim
+    if (referredDiscountApplied) {
+      console.log("User claimed their referred user discount");
+      // Find the referral where this user is a buyer and mark them as having claimed discount
+      const referralToUpdate = await Referral.findOne({
+        buyers: req.user._id,
+        isCompleted: true,
+        discountClaimedBy: { $ne: req.user._id }
+      });
+
+      if (referralToUpdate) {
+        referralToUpdate.discountClaimedBy.push(req.user._id);
+        await referralToUpdate.save();
+        console.log(`User ${req.user._id} marked as having claimed their 10% referred discount`);
+      }
     }
 
     const order = await Order.create({

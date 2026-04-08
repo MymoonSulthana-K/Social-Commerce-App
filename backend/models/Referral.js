@@ -7,7 +7,8 @@ const referralSchema = new mongoose.Schema({
   expiresAt: { type: Date, required: true }, // Set to Date.now() + 24h
   buyers: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }], // Track unique buyers
   isCompleted: { type: Boolean, default: false },
-  discountApplied: { type: Boolean, default: false }
+  discountApplied: { type: Boolean, default: false },
+  discountClaimedBy: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }] // Track referred users who claimed their 10% discount
 }, { timestamps: true });
 
 module.exports = mongoose.model('Referral', referralSchema);

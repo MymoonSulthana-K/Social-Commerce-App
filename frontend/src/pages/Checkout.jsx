@@ -8,6 +8,8 @@ function Checkout() {
   const [cartItems, setCartItems] = useState([]);
   const [total, setTotal] = useState(0);
   const [discountedItems, setDiscountedItems] = useState([]); // Track which products get 50% off
+  const [referredDiscount, setReferredDiscount] = useState(null); // Track if user has referred discount
+  const [applyReferredDiscount, setApplyReferredDiscount] = useState(false); // Track if user wants to apply referred discount
   const [shippingInfo, setShippingInfo] = useState({
     name: "",
     email: "",
@@ -42,6 +44,16 @@ function Checkout() {
         } else {
           navigate("/cart");
         }
+
+        // Check if user has a referred user discount available
+        try {
+          const discountData = await apiRequest("/referral/check-referred-discount");
+          if (discountData && discountData.eligible) {
+            setReferredDiscount(discountData);
+          }
+        } catch (err) {
+          console.log("No referred discount available");
+        }
       } catch (err) {
         console.error("Checkout fetch error:", err);
         navigate("/cart");
@@ -50,6 +62,14 @@ function Checkout() {
 
     fetchCartForCheckout();
   }, [navigate, searchParams]);
+
+  // Recalculate total when referred discount is toggled
+  useEffect(() => {
+    if (cartItems.length > 0) {
+      let ref = localStorage.getItem('activeReferral');
+      calculateTotal(cartItems, ref);
+    }
+  }, [applyReferredDiscount]);
 
   // 2. Modified calculateTotal to check Referral Status per product and handle referral code
   const calculateTotal = async (items, refCode = null) => {
@@ -71,6 +91,11 @@ function Checkout() {
       } catch (err) {
         currentSubtotal += item.price * item.quantity;
       }
+    }
+
+    // Apply 10% discount if user is referred and wants to use it
+    if (applyReferredDiscount && referredDiscount && referredDiscount.eligible) {
+      currentSubtotal = currentSubtotal * 0.9; // 10% discount
     }
 
     setDiscountedItems(dItems);
@@ -110,7 +135,8 @@ function Checkout() {
           paymentMethod,
           total, 
           discountedItems,
-          referralCode: ref // Includes referral code if exists
+          referralCode: ref, // Includes referral code if exists
+          referredDiscountApplied: applyReferredDiscount // Pass the referred discount flag
         })
       });
       localStorage.removeItem("cart");
@@ -195,6 +221,38 @@ function Checkout() {
 
         <div className="order-summary">
           <h3>Order Summary</h3>
+          
+          {/* Show referred user discount offer */}
+          {referredDiscount && referredDiscount.eligible && (
+            <div style={{
+              backgroundColor: '#e8f5e9',
+              border: '2px solid #4caf50',
+              borderRadius: '8px',
+              padding: '12px',
+              marginBottom: '16px'
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <div>
+                  <p style={{ margin: '0 0 8px 0', fontWeight: 'bold', color: '#2e7d32' }}>
+                    🎉 You have a 10% discount as a referred customer!
+                  </p>
+                  <p style={{ margin: '0', fontSize: '12px', color: '#558b2f' }}>
+                    Thank you for shopping through a referral
+                  </p>
+                </div>
+                <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
+                  <input
+                    type="checkbox"
+                    checked={applyReferredDiscount}
+                    onChange={(e) => setApplyReferredDiscount(e.target.checked)}
+                    style={{ cursor: 'pointer', width: '18px', height: '18px' }}
+                  />
+                  <span style={{ fontWeight: 'bold' }}>Apply</span>
+                </label>
+              </div>
+            </div>
+          )}
+
           <div className="summary-items">
             {cartItems.map(item => {
               const isDiscounted = discountedItems.includes(item.productId);
@@ -231,6 +289,12 @@ function Checkout() {
               <span>Subtotal:</span>
               <span>₹{displaySubtotal}</span>
             </div>
+            {applyReferredDiscount && referredDiscount && referredDiscount.eligible && (
+              <div className="summary-row" style={{ color: '#4caf50', fontWeight: 'bold' }}>
+                <span>Referred Discount (10%):</span>
+                <span>-₹{Math.round(displaySubtotal * 0.1)}</span>
+              </div>
+            )}
             <div className="summary-row">
               <span>Shipping:</span>
               <span>{total > 500 || displaySubtotal > 500 ? "Free" : "₹50"}</span>
